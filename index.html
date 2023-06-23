@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Maps</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #locationCopy {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .copy-card {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzCkAHtwyy-gZvoZWVrPzXq4oTjH8jlCc&libraries=places"></script>
+    <script>
+        $(document).ready(function() {
+            var locationInput = $('#locationInput');
+            var locationCopy = $('#locationCopy');
+            var copyCard = $('.copy-card');
+
+            // Initialize Google Maps Autocomplete
+            var autocomplete = new google.maps.places.Autocomplete(locationInput[0]);
+            autocomplete.setFields(['formatted_address']);
+
+            autocomplete.addListener('place_changed', function() {
+                var place = autocomplete.getPlace();
+                if (place && place.formatted_address) {
+                    locationCopy.text(place.formatted_address);
+                    copyCard.text('Copy');
+                }
+            });
+
+            locationInput.on('input', function() {
+                locationCopy.text('');
+                copyCard.text('');
+            });
+
+            copyCard.on('click', function() {
+                var locationText = locationCopy.text();
+                if (locationText) {
+                    var tempInput = $('<input>');
+                    $('body').append(tempInput);
+                    tempInput.val(locationText).select();
+                    document.execCommand('copy');
+                    tempInput.remove();
+                    alert('Location copied to clipboard: ' + locationText);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Google Maps</h1>
+        <input type="text" id="locationInput" placeholder="Enter a location">
+        <div id="locationCopy"></div>
+        <div class="copy-card"></div>
+    </div>
+</body>
+</html>
